@@ -6,17 +6,22 @@
 
 ---
 
-## 图文操作教程
+## 🎬 先看效果｜图文操作教程
 
-- [打开交互式图片操作教程](https://rwei14257-design.github.io/rubiks-cube-solver/guide.html)
-- [进入魔方复原助手](https://rwei14257-design.github.io/rubiks-cube-solver/)
+**[在线体验魔方复原助手](https://rwei14257-design.github.io/rubiks-cube-solver/)** · **[打开 7 步交互式图文教程](https://rwei14257-design.github.io/rubiks-cube-solver/guide.html)** · [反馈问题](https://github.com/rwei14257-design/rubiks-cube-solver/issues)
 
-教程包含两条路线：
+[![两条上手路线：随机打乱和拍照录入](assets/tutorial/quickstart.svg)](https://rwei14257-design.github.io/rubiks-cube-solver/guide.html)
 
-1. **快速体验（4 步）**：选择阶数 → 随机打乱 → 一键还原 → 逐步播放／自动还原。
-2. **实物拍照（3 步）**：拍照或上传 → 按上、右、前、下、左、后录入六面 → 颜色修正并求解。
+首次使用建议先选 3×3，通过「**随机打乱 → 一键还原 → 下一步 / 自动还原**」体验 3D 演示；需要录入真实魔方时，走「**拍照识别 → 录入六面 → 修正颜色 → 开始求解**」路线。
 
-教程配有可交互切换的矢量操作示意图，离线可用；图示不是网页真实截图。4×4 通用求解和 5×5 自动求解的功能限制仍然有效。
+| 操作路线 | 每步教什么 | 开始 |
+| --- | --- | --- |
+| 🎲 快速体验（4 步） | 选择阶数、随机打乱、求解、播放与速度调整 | [打开 3D 教程](https://rwei14257-design.github.io/rubiks-cube-solver/guide.html#quick) |
+| 📷 实物拍照（3 步） | 选择摄像头/上传、依次录入六面、校正颜色并求解 | [打开拍照教程](https://rwei14257-design.github.io/rubiks-cube-solver/guide.html#scan) |
+
+> 本项目教程中使用原创 SVG 操作示意图，而非真实网页截图。**4×4 应用内已知打乱的逆序回放并非任意状态通用求解；5×5 暂不支持自动求解。**拍摄流程要求用户逐格核对颜色。
+>
+> 图文说明编排参考 [Best-README-Template](https://github.com/othneildrew/Best-README-Template) 的快速入口与分步文档、[awesome-readme](https://github.com/matiassingers/awesome-readme) 的视觉展示实践。所有插图和文字为本项目重新制作。
 
 ---
 
