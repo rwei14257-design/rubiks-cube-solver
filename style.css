@@ -630,3 +630,6 @@ html, body {
 .c-orange { background: #ff7b00; color: #fff; }
 .c-blue { background: #1a6dff; color: #fff; }
 .c-green { background: #00a94f; color: #fff; }
+
+/* Illustrated tutorial entry */
+.guide-entry{display:flex;justify-content:space-between;gap:9px;align-items:center;color:var(--text);background:var(--bg-card);border:1px solid var(--border);border-radius:15px;padding:14px 16px;margin-bottom:22px;text-decoration:none;font-size:14px;font-weight:650}.guide-entry:hover{border-color:var(--primary)}.guide-entry:focus-visible{outline:3px solid var(--primary);outline-offset:3px}.guide-entry span{font-size:22px;color:var(--primary)}
