@@ -1,8 +1,9 @@
 /* Service Worker — scoped network-first cache for reliable updates and offline use. */
-const CACHE_NAME = 'rubiks-cube-solver-v4';
+const CACHE_NAME = 'rubiks-cube-solver-v5';
 const ASSETS = [
   './',
   './index.html',
+  './guide.html',
   './style.css',
   './app.js',
   './solver.js',
