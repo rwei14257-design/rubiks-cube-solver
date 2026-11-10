@@ -1,0 +1,131 @@
+魔方复原助手 — 浏览器端回归测试报告
+生成时间: 2026-11-10T10:40:15.809Z
+结果：30/30 通过；非预期控制台错误 0 条
+========================================
+[PASS] #1 页面加载
+  输入: 访问 index.html
+  预期: 标题"魔方复原助手"
+  实际: 魔方复原助手
+[PASS] #2 响应式-手机无横向溢出
+  输入: 390×844
+  预期: scrollWidth <= innerWidth
+  实际: scrollWidth=390
+[PASS] #3 3D 画布渲染
+  输入: 点击3D教学tab
+  预期: canvas 存在
+  实际: true
+[PASS] #4 3x3 随机打乱
+  输入: 点击随机打乱
+  预期: 打乱态且每色9个
+  实际: {"isScrambled":true,"counts":{"yellow":9,"orange":9,"green":9,"white":9,"blue":9,"red":9}}
+[PASS] #5 3x3 一键还原求解正确
+  输入: 打乱态求解
+  预期: isSolved=true 且 solLen>0
+  实际: {"solLen":21,"isSolved":true}
+[PASS] #6 3x3 一键还原进入播放
+  输入: 点击一键还原
+  预期: 有求解步骤
+  实际: {"hasSolution":true,"moveCount":"步骤数：21"}
+[PASS] #7 3x3 下一步动画
+  输入: 点击下一步
+  预期: currentStep 递增
+  实际: currentStep=0
+[PASS] #8 3x3 每一步3D贴纸颜色对应
+  输入: 连续播放全部 21 步
+  预期: 每步 corrected=0、missing=0 且未重建 cubie
+  实际: {"total":21,"bad":[],"cubiesBefore":26,"cubiesAfter":26,"finalStep":21}
+[PASS] #9 3x3 状态重置
+  输入: 点击重置
+  预期: solution=0 且还原态
+  实际: {"solutionLen":0,"currentStep":-1,"diySolved":true}
+[PASS] #10 2x2 类型切换渲染
+  输入: 选择2x2
+  预期: 8 个 cubie
+  实际: 8
+[PASS] #11 2x2 打乱+求解
+  输入: 打乱后求解
+  预期: valid=true 且 solLen>0 且每面4格
+  实际: {"valid":true,"solLen":19,"err":null,"uLen":4}
+[PASS] #12 4x4 渲染+面状态
+  输入: 选择4x4
+  预期: 64 cubie 且每面16格
+  实际: {"cubies":64,"diyLen":16}
+[PASS] #13 4x4 打乱数据同步
+  输入: 打乱后检查
+  预期: 每色16个 且 96个贴纸已着色
+  实际: {"conserved":true,"stickerCount":96}
+[PASS] #14 4x4 旋转逻辑
+  输入: rotateFace R
+  预期: cubie数64 且坐标集合不变
+  实际: {"cubiesAfter":64,"positionsUnchanged":true}
+[PASS] #15 4x4 异常输入检测
+  输入: U面首格改色破坏计数
+  预期: 检测到计数异常
+  实际: {"valid":false,"bad":[["green",19],["yellow",15],["orange",14]]}
+[PASS] #16 4x4 后台求解器可用
+  输入: Worker 输入已还原4×4
+  预期: 返回 done
+  实际: {"ok":true,"type":"done","len":0,"msg":""}
+[PASS] #17 4x4 一键还原端到端
+  输入: 固定7步打乱后点击一键还原
+  预期: 解非空且应用后完全还原、无失败弹窗
+  实际: {"len":7,"solved":true,"alerts":[],"source":"inverse","stepText":"应用内随机打乱已用打乱序列的逆序还原该路径未调用通用降阶求解器；手工涂色或扫描输入会自动改用降阶求解。","counter":"步骤数：7","progressGone":true}
+[PASS] #18 4x4 解法来源如实标注
+  输入: 检查 solveSource 与界面文案
+  预期: 标注为逆序列还原
+  实际: {"source":"inverse","stepText":"应用内随机打乱已用打乱序列的逆序还原该路径未调用通用降阶求解器；手工涂色或扫描输入会自动改用降阶求解。"}
+[PASS] #19 4x4 逐步播放数据同步
+  输入: 点击下一步
+  预期: currentStep=0 且 diyFaces 与预期一致
+  实际: {"same":true,"step":0,"first":"Lw'"}
+[PASS] #20 4x4 每一步3D贴纸颜色对应
+  输入: 连续播放全部 7 步（含宽转/中层）
+  预期: 每步 corrected=0、missing=0 且未重建 cubie
+  实际: {"total":7,"bad":[],"cubiesBefore":64,"cubiesAfter":64,"finalStep":7,"finalText":"完成已还原 🎉恭喜，魔方已全部还原"}
+[PASS] #21 4x4 逐步撤销颜色对应
+  输入: 逐步点击上一步回到起始
+  预期: 每步颜色一致、currentStep=-1、恢复打乱态
+  实际: {"bad":[],"same":true,"step":-1}
+[PASS] #22 4x4 宽/中层转动动画
+  输入: Uw, 2R, Rw2
+  预期: cubie数保持64
+  实际: {"before":64,"after":64}
+[PASS] #23 5x5 渲染+面状态
+  输入: 选择5x5
+  预期: 124 cubie 且每面25格
+  实际: {"cubies":124,"diyLen":25}
+[PASS] #24 5x5 旋转逻辑
+  输入: rotateFace U
+  预期: cubie数124
+  实际: 124
+[PASS] #25 5x5 未实现功能诚实标注
+  输入: 还原态点击一键还原
+  预期: 提示"开发中"且不产生假解
+  实际: {"alerts":["求解失败：五阶的降阶法求解器仍在开发中，敬请期待\n请检查涂色是否正确（每种颜色应恰好出现 25 次）。"],"solLen":0}
+[PASS] #26 切回3x3
+  输入: 选择3x3
+  预期: 26 cubie
+  实际: 26
+[PASS] #27 响应式-桌面无横向溢出
+  输入: 900×900
+  预期: scrollWidth <= innerWidth
+  实际: scrollWidth=900
+[PASS] #28 浅色主题
+  输入: colorScheme=light
+  预期: 浅色背景
+  实际: rgb(245, 245, 247)
+[PASS] #29 2x2 奇偶异常处理
+  输入: 奇置换非法输入
+  预期: 抛出 ParityError
+  实际: ParityError
+[PASS] #30 控制台无意外错误
+  输入: 全流程控制台/页面异常
+  预期: 非预期错误=0
+  实际: 0
+
+通过: 30/30
+控制台错误: 1（预期内 1，非预期 0）
+  EXPECTED: [5x5 旋转逻辑] Error: 五阶的降阶法求解器仍在开发中，敬请期待
+    at solveCurrent (http://localhost:8765/app.js:1123:13)
+    at http://localhost:8765/app.js:1165:82
+    at async HTMLButtonElement.solveFromDiy (http://localhost:8765/app.js:1507:24)

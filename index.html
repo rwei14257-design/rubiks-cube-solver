@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#000000" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="魔方助手" />
+<title>魔方复原助手</title>
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" type="image/png" href="icon-192.png" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- 顶部毛玻璃栏 -->
+<header class="topbar">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" class="logo" aria-hidden="true">
+      <rect x="2" y="2" width="6.5" height="6.5" rx="1.6" fill="#ff453a"/>
+      <rect x="8.75" y="2" width="6.5" height="6.5" rx="1.6" fill="#ffd60a"/>
+      <rect x="15.5" y="2" width="6.5" height="6.5" rx="1.6" fill="#30d158"/>
+      <rect x="2" y="8.75" width="6.5" height="6.5" rx="1.6" fill="#0a84ff"/>
+      <rect x="8.75" y="8.75" width="6.5" height="6.5" rx="1.6" fill="#ffffff" stroke="#333"/>
+      <rect x="15.5" y="8.75" width="6.5" height="6.5" rx="1.6" fill="#ff9f0a"/>
+      <rect x="2" y="15.5" width="6.5" height="6.5" rx="1.6" fill="#ff375f"/>
+      <rect x="8.75" y="15.5" width="6.5" height="6.5" rx="1.6" fill="#bf5af2"/>
+      <rect x="15.5" y="15.5" width="6.5" height="6.5" rx="1.6" fill="#1c1c1e"/>
+    </svg>
+    <span class="brand-text">魔方复原助手</span>
+  </div>
+  <select class="cube-type-select" id="cubeTypeSelect" aria-label="选择魔方类型">
+    <option value="333">3×3 三阶</option>
+    <option value="222">2×2 二阶</option>
+    <option value="444">4×4 四阶</option>
+    <option value="555">5×5 五阶</option>
+  </select>
+</header>
+
+<main class="container">
+
+  <!-- ===================== 计时器 ===================== -->
+  <section class="panel active" id="panel-timer">
+    <div class="page-heading">
+      <h1 class="page-title">计时器</h1>
+      <p class="page-subtitle">开始还原时点击，完成时再点击一次</p>
+    </div>
+
+    <button class="timer-stage" id="timerStage">
+      <span class="timer-display" id="timerDisplay">0.00</span>
+      <span class="timer-state" id="timerState">轻点开始计时</span>
+    </button>
+
+    <div class="timer-actions">
+      <button class="btn ghost round" id="btnReset" aria-label="复位">↺ 复位</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">最佳成绩</div>
+        <div class="stat-value" id="bestTime">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">平均成绩</div>
+        <div class="stat-value" id="avgTime">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">还原次数</div>
+        <div class="stat-value" id="solveCount">0</div>
+      </div>
+    </div>
+
+    <div class="card history">
+      <div class="section-title">
+        <h3>历史记录</h3>
+        <button class="btn ghost small" id="btnClearHistory">清空</button>
+      </div>
+      <ul class="history-list" id="historyList">
+        <li class="empty">还没有记录，完成一次还原后这里会显示成绩</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== 拍照识别 ===================== -->
+  <section class="panel" id="panel-scan">
+    <div class="page-heading">
+      <h1 class="page-title">拍照识别</h1>
+      <p class="page-subtitle">依次拍摄六个面，自动识别颜色</p>
+    </div>
+
+    <div class="scan-face-progress" id="faceProgress"></div>
+    <button class="btn ghost small reset-scan" id="btnResetScan">重新开始</button>
+
+    <div class="video-wrap" id="videoWrap">
+      <video id="video" playsinline autoplay muted></video>
+      <img id="previewImg" class="preview-img" alt="上传的照片预览" />
+      <canvas id="overlay" class="overlay"></canvas>
+      <div class="scan-frame">
+        <span class="corner tl"></span><span class="corner tr"></span>
+        <span class="corner bl"></span><span class="corner br"></span>
+      </div>
+      <div class="video-placeholder" id="videoPlaceholder">
+        <svg viewBox="0 0 24 24" class="ph-icon"><path fill="currentColor" d="M12 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-6 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-6 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-6-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>
+        <p>开启摄像头或上传照片</p>
+      </div>
+      <button class="btn ghost small clear-preview" id="btnClearPreview" title="移除照片">✕ 移除照片</button>
+    </div>
+
+    <div class="scan-controls">
+      <button class="btn primary flex1" id="btnCamera">开启摄像头</button>
+      <button class="btn primary flex1" id="btnCapture">拍照识别</button>
+      <label class="btn ghost flex1 file-btn">
+        上传照片
+        <input type="file" id="fileInput" accept="image/*" capture="environment" hidden />
+      </label>
+    </div>
+
+    <div class="card scan-grid">
+      <div class="scan-grid-head">
+        <h3 id="currentFaceTitle">当前面：请开始</h3>
+        <span class="muted">点格子修正颜色</span>
+      </div>
+      <div class="grid3x3" id="grid3x3"></div>
+      <div class="palette" id="palette"></div>
+    </div>
+
+    <div class="scan-actions">
+      <button class="btn primary big full" id="btnSolve" disabled>开始求解</button>
+    </div>
+  </section>
+
+  <!-- ===================== 3D 教学 ===================== -->
+  <section class="panel" id="panel-solve">
+    <div class="page-heading">
+      <h1 class="page-title">3D 教学</h1>
+      <p class="page-subtitle" id="solveSubtitle">点选颜色，点击魔方贴纸自由涂色，一键自动还原</p>
+    </div>
+
+    <div class="solve-3d">
+      <div id="cubeContainer"></div>
+      <div class="cube-toolbar">
+        <div class="diy-colors" id="diyColors"></div>
+        <div class="diy-hint" id="diyHint">先选一个颜色，再点魔方贴纸涂色</div>
+        <button class="btn ghost full" id="btnScramble">🎲 随机打乱</button>
+        <button class="btn primary big full" id="btnSolveDIY">一键还原</button>
+      </div>
+    </div>
+
+    <div class="card solve-panel">
+      <div class="solve-meta">
+        <span id="solveMoveCount">步骤数：--</span>
+        <span class="speed-meta" id="speedMeta">速度：1 秒/步</span>
+      </div>
+      <div class="solve-step" id="solveStep">先 DIY 打乱魔方，或完成拍照识别</div>
+      <div class="solve-list" id="solveList"></div>
+      <div class="solve-controls">
+        <button class="btn ghost" id="btnPrev">上一步</button>
+        <button class="btn primary" id="btnNext">下一步</button>
+        <button class="btn primary" id="btnAutoPlay">自动还原</button>
+        <button class="btn ghost" id="btnResetSolve">重置</button>
+      </div>
+      <div class="speed-controls">
+        <span class="speed-label">每步时长</span>
+        <input type="range" class="speed-slider" id="speedSlider" min="0.5" max="5" step="0.5" value="1" />
+        <span class="speed-value" id="speedValue">1.0 秒</span>
+      </div>
+    </div>
+
+    <div class="card" style="font-size:12px;line-height:1.75;opacity:.8;padding:12px 14px;word-break:break-word">
+      <strong style="display:block;margin-bottom:4px;font-size:13px;opacity:1">各阶能力说明</strong>
+      3×3 / 2×2：任意合法颜色状态均可一键还原。<br>
+      4×4：应用内「🎲 随机打乱」会用打乱序列的逆序瞬时还原；手工涂色或拍照输入会尝试降阶法（中心配对 → 棱块配对 → 3×3 → 奇偶校验），
+      复杂状态可能在有限步内求解失败并明确提示，不会给出错误解。<br>
+      5×5：渲染、涂色、打乱与转动可用；自动降阶求解仍在开发中，点击一键还原会如实提示。
+    </div>
+  </section>
+
+</main>
+
+<!-- 底部 Tab 导航 -->
+<nav class="tabbar" id="tabbar">
+  <button class="tab active" data-tab="timer">
+    <svg viewBox="0 0 24 24" class="tab-ico"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm4.7 14.7-1.4 1.4-4-4V6h2v7.2z"/></svg>
+    <span>计时器</span>
+  </button>
+  <button class="tab" data-tab="scan">
+    <svg viewBox="0 0 24 24" class="tab-ico"><path fill="currentColor" d="M9 2H4a2 2 0 0 0-2 2v5h2V4h5zm6 0h5a2 2 0 0 1 2 2v5h-2V4h-5zM2 15v5a2 2 0 0 0 2 2h5v-2H4v-5zm20 0v5a2 2 0 0 1-2 2h-5v-2h5v-5zM7 7h10v10H7z"/></svg>
+    <span>拍照识别</span>
+  </button>
+  <button class="tab" data-tab="solve">
+    <svg viewBox="0 0 24 24" class="tab-ico"><path fill="currentColor" d="M21 16V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1zM5 5h6v4H5zm8 0h6v4h-6zm-8 6h6v4H5zm8 0h6v4h-6z"/></svg>
+    <span>3D 教学</span>
+  </button>
+</nav>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three/three.module.js",
+    "three/addons/": "./vendor/three/"
+  }
+}
+</script>
+<script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/OrbitControls.js';
+  import { RoundedBoxGeometry } from 'three/addons/RoundedBoxGeometry.js';
+  import * as cubeSolver from './vendor/cube-solver.js';
+
+  window.THREE = THREE;
+  window.OrbitControls = OrbitControls;
+  window.RoundedBoxGeometry = RoundedBoxGeometry;
+  window.cubeSolverModule = cubeSolver;
+  window.dispatchEvent(new Event('libs-ready'));
+</script>
+<script src="cube.js"></script>
+<script src="solver.js"></script>
+<script src="scanner.js"></script>
+<script src="bigcube.js"></script>
+<script src="timer.js"></script>
+<script src="app.js"></script>
+<script>
+  // 注册 Service Worker（PWA 离线缓存）
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(err => console.warn('SW 注册失败:', err));
+    });
+  }
+</script>
+</body>
+</html>

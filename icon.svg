@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1c1c1e"/>
+      <stop offset="1" stop-color="#000000"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- 3x3 魔方，中心在 (256,256)，每格约 86px，间隔 10px -->
+  <g stroke="#000" stroke-width="6">
+    <!-- 第一行 -->
+    <rect x="112" y="112" width="86" height="86" rx="16" fill="#ff453a"/>
+    <rect x="208" y="112" width="86" height="86" rx="16" fill="#ffd60a"/>
+    <rect x="304" y="112" width="86" height="86" rx="16" fill="#30d158"/>
+    <!-- 第二行 -->
+    <rect x="112" y="208" width="86" height="86" rx="16" fill="#0a84ff"/>
+    <rect x="208" y="208" width="86" height="86" rx="16" fill="#ffffff"/>
+    <rect x="304" y="208" width="86" height="86" rx="16" fill="#ff9f0a"/>
+    <!-- 第三行 -->
+    <rect x="112" y="304" width="86" height="86" rx="16" fill="#ff375f"/>
+    <rect x="208" y="304" width="86" height="86" rx="16" fill="#bf5af2"/>
+    <rect x="304" y="304" width="86" height="86" rx="16" fill="#5ac8fa"/>
+  </g>
+</svg>

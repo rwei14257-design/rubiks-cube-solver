@@ -1,0 +1,33 @@
+{
+  "name": "魔方复原助手",
+  "short_name": "魔方助手",
+  "description": "三阶/二阶魔方拍照识别与逐步复原教学，支持 3×3、2×2、4×4、5×5",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "lang": "zh-CN",
+  "categories": ["education", "utilities", "games"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
