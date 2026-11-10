@@ -22,8 +22,9 @@ jobs:
           mkdir -p "$RUNNER_TEMP/pages-check"
           # Pages deploys asynchronously. A query parameter prevents a cached 404
           # from being mistaken for the newest published revision.
-          for file in guide.html index.html app.js sw.js; do
+          for file in guide.html index.html app.js sw.js assets/tutorial/quickstart.svg; do
             echo "Checking: $SITE/$file"
+            mkdir -p "$(dirname "$RUNNER_TEMP/pages-check/$file")"
             curl --fail --silent --show-error --location \
               --retry 30 --retry-delay 10 --retry-all-errors \
               --max-time 20 \
@@ -34,4 +35,5 @@ jobs:
           grep -q '图文操作教程' "$RUNNER_TEMP/pages-check/guide.html"
           grep -q './guide.html' "$RUNNER_TEMP/pages-check/index.html"
           grep -q 'rubiks-cube-solver-v5' "$RUNNER_TEMP/pages-check/sw.js"
-          echo "PASS: published guide, homepage, app and offline worker are accessible"
+          grep -q "魔方复原助手" "$RUNNER_TEMP/pages-check/assets/tutorial/quickstart.svg"
+          echo "PASS: published guide, quickstart SVG, homepage, app and offline worker are accessible"
