@@ -6,6 +6,20 @@
 
 ---
 
+## 图文操作教程
+
+- [打开交互式图片操作教程](https://rwei14257-design.github.io/rubiks-cube-solver/guide.html)
+- [进入魔方复原助手](https://rwei14257-design.github.io/rubiks-cube-solver/)
+
+教程包含两条路线：
+
+1. **快速体验（4 步）**：选择阶数 → 随机打乱 → 一键还原 → 逐步播放／自动还原。
+2. **实物拍照（3 步）**：拍照或上传 → 按上、右、前、下、左、后录入六面 → 颜色修正并求解。
+
+教程配有可交互切换的矢量操作示意图，离线可用；图示不是网页真实截图。4×4 通用求解和 5×5 自动求解的功能限制仍然有效。
+
+---
+
 ## 一、如何运行
 
 ```bash
@@ -74,7 +88,8 @@ NODE_PATH="playwright模块路径" node test_report.js
 
 | 文件 | 职责 |
 |------|------|
-| `index.html` | 入口页面与 UI 结构 |
+| `index.html` | 入口页面与 UI 结构、图文教程入口 |
+| `guide.html` | 交互式图片操作教程与 SVG 示意图 |
 | `style.css` | 样式（含浅/深色主题、响应式） |
 | `app.js` | 主逻辑：ThreeRenderer（Three.js 3D 渲染）、状态管理、播放控制（`doStep`/`undoStepOf`/`nextStep`/`prevStep`/`goToStep`）、求解编排、UI 事件 |
 | `bigcube.js` | 4×4/5×5 魔方模型 `BigCube`、降阶法求解器（中心/棱配对、parity、Kociemba 收尾） |
