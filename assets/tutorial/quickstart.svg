@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="440" viewBox="0 0 1100 440" role="img" aria-labelledby="title desc">
+<title id="title">魔方复原助手两种上手路线</title>
+<desc id="desc">左侧路线：选择阶数、随机打乱、一键还原、逐步播放。右侧路线：拍摄六个面、手动修正颜色、开始求解、查看三维动画。示意图非实际网页截图。</desc>
+<rect width="1100" height="440" rx="25" fill="#111a2a"/>
+<text x="38" y="54" font-family="Arial,Microsoft YaHei,sans-serif" font-size="30" font-weight="750" fill="#f5f7ff">魔方复原助手 · 看图 1 分钟上手</text>
+<text x="38" y="85" font-family="Arial,Microsoft YaHei,sans-serif" font-size="17" fill="#a6b6ce">选择适合你的操作路线，完整交互式教程请点击图片</text>
+<g font-family="Arial,Microsoft YaHei,sans-serif">
+<rect x="38" y="116" width="495" height="261" rx="21" fill="#1c2c43" stroke="#547fac" stroke-width="2"/>
+<rect x="567" y="116" width="495" height="261" rx="21" fill="#1c2c43" stroke="#547fac" stroke-width="2"/>
+<text x="68" y="159" font-size="24" font-weight="700" fill="#9bd1ff">A / 随机打乱 · 3D 动画</text>
+<text x="597" y="159" font-size="24" font-weight="700" fill="#9be8b4">B / 真实魔方 · 拍照录入</text>
+<g fill="#f2f6ff" font-size="21" font-weight="650">
+<text x="72" y="212">① 选择 2×2 / 3×3 / 4×4</text><text x="72" y="254">② 点击「随机打乱」</text><text x="72" y="296">③ 点击「一键还原」</text><text x="72" y="338">④ 按「下一步」或「自动还原」</text>
+<text x="603" y="212">① 进入「拍照识别」</text><text x="603" y="254">② 按上、右、前、下、左、后录入</text><text x="603" y="296">③ 核对每个颜色格子</text><text x="603" y="338">④ 求解成功后观看 3D 动画</text>
+</g></g>
+<text x="39" y="415" font-family="Arial,Microsoft YaHei,sans-serif" font-size="15" fill="#aec1d9">提示：4×4 通用求解存在限制；5×5 自动求解仍在开发中。所有内容均为原创流程示意。</text>
+</svg>
