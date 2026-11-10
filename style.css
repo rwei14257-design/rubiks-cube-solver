@@ -104,6 +104,7 @@ html, body {
   transition: background 0.2s, border-color 0.2s;
 }
 .cube-type-select:focus { outline: none; border-color: var(--primary); background-color: rgba(255, 255, 255, 0.1); }
+.cube-type-select:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
 
 /* ============ 容器 ============ */
 .container {
@@ -172,6 +173,12 @@ html, body {
 .btn.full { width: 100%; }
 .btn.flex1 { flex: 1; }
 .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* Visible keyboard focus (do not remove for touch or mouse styling). */
+:where(button, select, input, .file-btn):focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+}
 
 /* ============ 计时器 ============ */
 .timer-stage {
@@ -361,6 +368,9 @@ html, body {
   aspect-ratio: 1;
 }
 .grid3x3 .cell {
+  appearance: none;
+  padding: 0;
+  font-family: inherit;
   aspect-ratio: 1;
   border-radius: 12px;
   background: var(--cell-empty);
@@ -379,6 +389,8 @@ html, body {
 
 .palette { display: flex; gap: 10px; margin: 18px 0 4px; justify-content: center; flex-wrap: wrap; }
 .palette .swatch {
+  appearance: none;
+  padding: 0;
   width: 38px; height: 38px;
   border-radius: 50%;
   cursor: pointer;
@@ -491,6 +503,8 @@ html, body {
 .cube-toolbar .btn.big { width: 100%; margin-top: 4px; }
 .diy-colors { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 .diy-colors .diy-swatch {
+  appearance: none;
+  padding: 0;
   width: 40px; height: 40px;
   border-radius: 50%;
   cursor: pointer;

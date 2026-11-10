@@ -1,5 +1,5 @@
-/* Service Worker — 离线缓存（PWA） */
-const CACHE_NAME = 'cube-helper-v3';
+/* Service Worker — scoped network-first cache for reliable updates and offline use. */
+const CACHE_NAME = 'rubiks-cube-solver-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -20,36 +20,55 @@ const ASSETS = [
   './icon-512.png',
 ];
 
-// 安装：预缓存核心资源
+// Keep the previous worker usable until every essential asset has been cached.
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(ASSETS))
+      .then(() => self.skipWaiting())
   );
 });
 
-// 激活：清理旧缓存
+// Cache Storage is shared by all GitHub Pages projects on the same origin.
+// Delete only this project's old caches, never caches belonging to other apps.
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    ).then(() => self.clients.claim())
+    caches.keys()
+      .then((keys) => Promise.all(keys
+        .filter((key) => key === 'cube-helper-v3' ||
+          (key.startsWith('rubiks-cube-solver-') && key !== CACHE_NAME))
+        .map((key) => caches.delete(key))))
+      .then(() => self.clients.claim())
   );
 });
 
-// 请求：缓存优先，失败回退网络
+// Prefer current files while online; use last-good cached files offline.
+// Limit interception to this app's path to avoid touching other GitHub Pages projects.
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
+  const request = event.request;
+  if (request.method !== 'GET') return;
+  const url = new URL(request.url);
+  const scope = new URL(self.registration.scope);
+  if (url.origin !== scope.origin || !url.pathname.startsWith(scope.pathname)) return;
+
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    try {
+      const response = await fetch(request);
+      if (response.ok && response.type === 'basic') {
+        event.waitUntil(cache.put(request, response.clone()).catch((err) => {
+          console.warn('Offline cache write failed:', err);
+        }));
+      }
+      return response;
+    } catch (err) {
+      const cached = await cache.match(request);
       if (cached) return cached;
-      return fetch(event.request).then((resp) => {
-        // 仅缓存同源且成功的响应
-        if (resp.ok && new URL(event.request.url).origin === self.location.origin) {
-          const clone = resp.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-        }
-        return resp;
-      }).catch(() => cached);
-    })
-  );
+      if (request.mode === 'navigate') {
+        const fallback = await cache.match(new URL('index.html', scope).href);
+        if (fallback) return fallback;
+      }
+      return Response.error();
+    }
+  })());
 });

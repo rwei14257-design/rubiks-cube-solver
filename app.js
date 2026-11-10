@@ -685,8 +685,19 @@
 
   // ===================== Tab 切换 =====================
   function switchTab(tab) {
+    // Do not leave camera streaming when the user moves away from the scanner.
+    if (appState.currentTab === 'scan' && tab !== 'scan' && Scanner.isCameraOn()) {
+      Scanner.stopCamera();
+      $('#btnCamera').textContent = '开启摄像头';
+      if ($('#previewImg').style.display !== 'block') $('#videoPlaceholder').style.display = 'flex';
+    }
     appState.currentTab = tab;
-    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+    document.querySelectorAll('.tab').forEach(t => {
+      const active = t.dataset.tab === tab;
+      t.classList.toggle('active', active);
+      if (active) t.setAttribute('aria-current', 'page');
+      else t.removeAttribute('aria-current');
+    });
     document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + tab));
     if (tab === 'solve') {
       setTimeout(() => {
@@ -802,10 +813,20 @@
 
     Scanner.init(video, overlay);
     const detectCanvas = document.createElement('canvas');
+    let previewObjectUrl = null;
+    let imageLoadSerial = 0;
+
+    const fileLabel = document.querySelector('.file-btn');
+    fileLabel.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        $('#fileInput').click();
+      }
+    });
 
     function renderPalette() {
       palette.innerHTML = Scanner.COLOR_DEFS.map(c =>
-        `<div class="swatch ${c.name}" data-color="${c.name}" style="background:${c.css}" title="${c.label}"></div>`
+        `<button type="button" class="swatch ${c.name}" data-color="${c.name}" style="background:${c.css}" aria-label="设为${c.label}色" title="${c.label}"></button>`
       ).join('');
       palette.querySelectorAll('.swatch').forEach(sw => {
         sw.addEventListener('click', () => {
@@ -849,12 +870,13 @@
       grid3x3.innerHTML = grid.map((color, i) => {
         const css = color ? (Scanner.COLOR_DEFS.find(c => c.name === color)?.css || '#333') : '#333';
         const cls = 'cell' + (appState.selectedCell === i ? ' selected' : '');
-        return `<div class="${cls}" data-index="${i}" style="background:${css}">${color ? '' : '?'}</div>`;
+        return `<button type="button" class="${cls}" data-index="${i}" style="background:${css}" aria-pressed="${appState.selectedCell === i}" aria-label="第${i + 1}格：${color ? (COLOR_KEY_NAME[color] || color) : '未识别'}">${color ? '' : '?'}</button>`;
       }).join('');
       grid3x3.querySelectorAll('.cell').forEach(cell => {
         cell.addEventListener('click', () => {
           appState.selectedCell = parseInt(cell.dataset.index);
           renderGrid();
+          grid3x3.querySelector(`[data-index="${appState.selectedCell}"]`)?.focus();
         });
       });
     }
@@ -988,8 +1010,10 @@
     }
 
     // 显示上传照片预览，隐藏摄像头
-    function showPreview(img) {
-      previewImg.src = img.src;
+    function showPreview(img, objectUrl) {
+      if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
+      previewObjectUrl = objectUrl;
+      previewImg.src = objectUrl;
       previewImg.style.display = 'block';
       btnClearPreview.classList.add('show');
       placeholder.style.display = 'none';
@@ -1004,8 +1028,14 @@
 
     // 清除照片预览，回到初始状态
     function clearPreview() {
+      // Invalidate in-flight image loads and release any previous Blob URL.
+      imageLoadSerial++;
       previewImg.style.display = 'none';
       previewImg.removeAttribute('src');
+      if (previewObjectUrl) {
+        URL.revokeObjectURL(previewObjectUrl);
+        previewObjectUrl = null;
+      }
       btnClearPreview.classList.remove('show');
       overlay.style.opacity = '0';
       if (!Scanner.isCameraOn()) {
@@ -1019,14 +1049,12 @@
       if (previewImg.style.display === 'block' && previewImg.src) {
         const img = previewImg;
         if (img.naturalWidth && img.naturalHeight) {
-          applyDetected(Scanner.detectGrid(img, detectCanvas, getGridSize()), img);
-          advanceFace();
+          if (applyDetected(Scanner.detectGrid(img, detectCanvas, getGridSize()), img)) advanceFace();
           return;
         }
       }
       if (!Scanner.isCameraOn()) { alert('请先开启摄像头或上传照片'); return; }
-      applyDetected(Scanner.detectGrid(video, detectCanvas, getGridSize()), video);
-      advanceFace();
+      if (applyDetected(Scanner.detectGrid(video, detectCanvas, getGridSize()), video)) advanceFace();
     });
 
     $('#btnCamera').addEventListener('click', async () => {
@@ -1059,10 +1087,9 @@
       }
       loadUploadedImage(file, (img) => {
         // 显示预览
-        showPreview(img);
-        // 识别并自动切下一面
-        applyDetected(Scanner.detectGrid(img, detectCanvas, getGridSize()), img);
-        advanceFace();
+        showPreview(img, img.src);
+        // 识别并自动切下一面（仅识别成功时）
+        if (applyDetected(Scanner.detectGrid(img, detectCanvas, getGridSize()), img)) advanceFace();
       });
       e.target.value = '';
     });
@@ -1070,15 +1097,20 @@
     // 加载上传图片。现代浏览器已自动应用 EXIF 方向
     // （image-orientation 默认 from-image），无需手动旋转。
     function loadUploadedImage(file, cb) {
+      const serial = ++imageLoadSerial;
       const url = URL.createObjectURL(file);
       const img = new Image();
       img.onload = () => {
-        // 注意：不 revoke url，因为 showPreview 会用 previewImg.src 引用同一 blob URL
+        if (serial !== imageLoadSerial) {
+          URL.revokeObjectURL(url);
+          return;
+        }
+        // Keep this URL alive only while the preview is displayed.
         cb(img);
       };
       img.onerror = () => {
         URL.revokeObjectURL(url);
-        alert('图片加载失败，请重新选择');
+        if (serial === imageLoadSerial) alert('图片加载失败，请重新选择');
       };
       img.src = url;
     }
@@ -1366,7 +1398,7 @@
   function renderDiyColors() {
     const el = $('#diyColors');
     el.innerHTML = COLOR_KEYS.map(key =>
-      `<div class="diy-swatch ${appState.selectedColor === key ? 'active' : ''}" data-color="${key}" style="background:${COLOR_KEY_CSS[key]}" title="${COLOR_KEY_NAME[key]}"></div>`
+      `<button type="button" class="diy-swatch ${appState.selectedColor === key ? 'active' : ''}" data-color="${key}" style="background:${COLOR_KEY_CSS[key]}" title="${COLOR_KEY_NAME[key]}" aria-pressed="${appState.selectedColor === key}" aria-label="选取${COLOR_KEY_NAME[key]}色"></button>`
     ).join('');
     el.querySelectorAll('.diy-swatch').forEach(sw => {
       sw.addEventListener('click', () => {
@@ -1826,12 +1858,13 @@
     grid3x3.innerHTML = grid.map((color, i) => {
       const css = color ? (Scanner.COLOR_DEFS.find(c => c.name === color)?.css || '#333') : '#333';
       const cls = 'cell' + (appState.selectedCell === i ? ' selected' : '');
-      return `<div class="${cls}" data-index="${i}" style="background:${css}">${color ? '' : '?'}</div>`;
+      return `<button type="button" class="${cls}" data-index="${i}" style="background:${css}" aria-pressed="${appState.selectedCell === i}" aria-label="第${i + 1}格：${color ? (COLOR_KEY_NAME[color] || color) : '未识别'}">${color ? '' : '?'}</button>`;
     }).join('');
     grid3x3.querySelectorAll('.cell').forEach(cell => {
       cell.addEventListener('click', () => {
         appState.selectedCell = parseInt(cell.dataset.index);
         refreshScanGrid();
+        grid3x3.querySelector(`[data-index="${appState.selectedCell}"]`)?.focus();
       });
     });
     const btnSolve = $('#btnSolve');
