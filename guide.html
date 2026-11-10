@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#000000"><title>图文操作教程 - 魔方复原助手</title><link rel="stylesheet" href="./style.css"><style>
+.guide-shell{max-width:750px;margin:auto;padding:22px 17px 90px}.guide-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:28px}.guide-header a{color:var(--primary);text-decoration:none;font-weight:650}.guide-header span{color:var(--text-muted);font-size:14px}.guide-hero{text-align:center;margin:22px 0 25px}.guide-hero h1{font-size:clamp(28px,5vw,40px);line-height:1.25}.guide-hero p{color:var(--text-muted);line-height:1.7;margin-top:12px}.guide-tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0}.guide-tabs button{border:1px solid var(--border);background:var(--btn-overlay);color:var(--text);border-radius:15px;padding:13px 10px;font-size:16px;font-weight:700;cursor:pointer}.guide-tabs button[aria-selected=true]{border-color:var(--primary);background:rgba(10,132,255,.14)}.guide-tabs button:focus-visible,.guide-actions button:focus-visible,.guide-launch:focus-visible{outline:3px solid var(--primary);outline-offset:3px}.guide-card{background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:20px}.guide-card h2{font-size:23px;line-height:1.4;margin-bottom:14px}.guide-tag{font-size:12px;color:var(--primary);font-weight:800;letter-spacing:.12em}.guide-image{background:#111929;border-radius:16px;padding:10px;margin:16px 0}.guide-image svg{width:100%;height:auto;display:block}.guide-image figcaption{text-align:center;font-size:12px;color:#9daecb;padding:6px 0}.guide-card p{line-height:1.8;font-size:16px}.guide-actions{display:flex;gap:10px;align-items:center;justify-content:space-between;margin:18px 0}.guide-actions button{border:1px solid var(--border);border-radius:12px;padding:12px 18px;background:var(--btn-overlay);color:var(--text);font:600 15px inherit;cursor:pointer}.guide-actions button.primary{background:var(--primary);color:white}.guide-actions button:disabled{opacity:.4;cursor:not-allowed}.guide-actions output{color:var(--text-muted)}.guide-launch{display:block;background:var(--text);color:var(--bg);border-radius:14px;padding:16px;text-align:center;text-decoration:none;font-weight:700}.guide-notes{margin-top:28px;background:var(--bg-card);border:1px solid var(--border);border-radius:17px;padding:22px}.guide-notes h2{font-size:18px}.guide-notes ul{margin:12px 0 0 20px;line-height:1.9;color:var(--text-muted);font-size:14px}[hidden]{display:none!important}@media(max-width:450px){.guide-card{padding:13px}.guide-card h2{font-size:20px}.guide-card p{font-size:15px}.guide-actions button{padding:10px 12px;font-size:13px}}
+</style></head><body><main class="guide-shell">
+<header class="guide-header"><a href="./index.html">← 返回魔方助手</a><span>图片操作教程</span></header>
+<section class="guide-hero"><h1>看图上手，轻松学习复原</h1><p>从随机打乱到逐步动画，或通过照片录入真实魔方。点击下一步查看操作示意图。</p></section>
+<div class="guide-tabs" role="tablist" aria-label="教程路线"><button id="quickTab" role="tab" type="button" aria-selected="true" aria-controls="guideArticle">🎲 快速体验 · 4 步</button><button id="scanTab" role="tab" type="button" aria-selected="false" aria-controls="guideArticle">📷 拍照识别 · 3 步</button></div>
+<article class="guide-card" id="guideArticle" role="tabpanel" aria-live="polite"><span class="guide-tag" id="guideTag">STEP 01</span><h2 id="guideTitle">选择魔方阶数</h2><figure class="guide-image" id="guideImage"></figure><p id="guideText"></p></article>
+<div class="guide-actions"><button id="guidePrev" type="button">← 上一步</button><output id="guideProgress">1 / 4</output><button id="guideNext" class="primary" type="button">下一步 →</button></div>
+<a class="guide-launch" href="./index.html">打开魔方复原助手 ↗</a>
+<section class="guide-notes"><h2>功能提示</h2><ul><li>2×2、3×3 支持合法状态通用求解。</li><li>4×4 的应用内随机打乱可逆序还原，但真实扫描或手动涂色的复杂状态可能求解失败。</li><li>5×5 可以涂色与打乱，但尚未实现自动求解。</li><li>照片识别受光线影响，务必核对每一面的贴纸颜色。</li></ul></section></main>
+<script>
+(()=>{
+const quick=[
+["选择魔方阶数","在首页右上角选择 2×2、3×3、4×4 或 5×5，再点击页面底部「3D 教学」。建议先用 3×3 熟悉流程。","choose"],
+["点击随机打乱","进入「3D 教学」，点击「🎲 随机打乱」。拖动 3D 魔方可以查看不同面。","scramble"],
+["点击一键还原","打乱后点击「一键还原」，等待生成解法步骤。4×4 应用内随机打乱使用记录序列的逆序回放。","solve"],
+["播放每一步动画","按「下一步」逐个学习转动，或点击「自动还原」观看连续动画；速度滑块可调整每步时长。","play"]
+];
+const scan=[
+["进入拍照识别","在底部导航切换至「拍照识别」，选择「开启摄像头」或「上传照片」。确保整个魔方面完整出现在画面里。","camera"],
+["依次录入六个面","按上 U、右 R、前 F、下 D、左 L、后 B 的顺序录入六个面，按照页面的面向提示保持正确朝向。","faces"],
+["检查颜色并开始求解","逐格核对颜色。若识别错误，先点击格子再选择正确颜色；六面全部完成后点击「开始求解」。","correct"]
+];
+const svgText=(x,y,t,size=22,color="#fff")=>'<text x="'+x+'" y="'+y+'" font-size="'+size+'" font-weight="650" fill="'+color+'" font-family="system-ui,Arial,Microsoft YaHei,sans-serif">'+t+'</text>';
+const rect=(x,y,w,h,c,rx=14,stroke="#3d5478")=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+rx+'" fill="'+c+'" stroke="'+stroke+'" stroke-width="2"/>';
+const cube=(x,y,n=3,mix=true)=>{const colors=["#fff","#f5ca39","#ee5a4d","#3b84fa","#30ca8b","#fa922e"];let s='';for(let r=0;r<n;r++)for(let c=0;c<n;c++){let fill=mix?colors[(r*n+c*2)%6]:colors[3];s+=rect(x+c*42,y+r*42,37,37,fill,5,"#081424")}return s};
+function illustration(key){
+let body=rect(20,20,680,410,"#182338",22)+rect(20,20,680,54,"#293956",20)+svgText(44,55,"◈  魔方复原助手",20);
+const button=(x,y,label,primary=false,w=250)=>rect(x,y,w,55,primary?"#0a84ff":"#30425f")+svgText(x+21,y+35,label,21);
+if(key==="choose")body+=svgText(58,127,"魔方阶数",24)+button(55,151,"3×3 三阶   ▼",true,245)+svgText(60,251,"2×2   /   3×3",20)+svgText(60,287,"4×4   /   5×5",20)+svgText(395,162,"点击底部",22)+button(390,183,"3D 教学",true,250);
+if(key==="scramble")body+=cube(98,135)+svgText(353,152,"生成打乱的魔方",23)+button(354,187,"🎲 随机打乱",true)+svgText(354,294,"拖动模型查看六个面",18,"#bdd0e9");
+if(key==="solve")body+=cube(98,135)+svgText(353,153,"打乱后开始求解",23)+button(354,189,"一键还原",true)+svgText(354,296,"等待生成动作步骤",18,"#bdd0e9");
+if(key==="play")body+=cube(67,133,3,false)+svgText(320,134,"步骤 1 / 30    R",23)+button(316,170,"上一步",false,153)+button(480,170,"下一步",true,173)+button(316,245,"自动还原 ▶",true,337)+svgText(321,339,"下方可调整每步速度",17,"#bdd0e9");
+if(key==="camera")body+=rect(68,119,247,225,"#0a1527")+cube(131,155,3,true)+svgText(363,158,"取景框对准一个面",21)+button(362,181,"开启摄像头",true)+button(362,249,"上传照片");
+if(key==="faces"){const names=["上 U","右 R","前 F","下 D","左 L","后 B"];body+=svgText(70,137,"六个面按顺序录入",24);names.forEach((t,i)=>{let x=70+(i%3)*200,y=157+Math.floor(i/3)*88;body+=rect(x,y,178,67,["#486782","#554e38","#305a53"][i%3])+svgText(x+38,y+42,t,22)})}
+if(key==="correct")body+=cube(85,142,3,true)+svgText(340,141,"点击格子修正颜色",22)+rect(339,168,50,50,"#f3f3f3",9)+rect(398,168,50,50,"#ed5c55",9)+rect(457,168,50,50,"#34c77b",9)+button(336,254,"开始求解",true,283);
+return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 450" role="img" aria-label="操作按钮及魔方颜色的视觉示意图，不是实际网页截图">'+body+'</svg><figcaption>操作示意图，实际按钮以网站为准。</figcaption>';
+}
+let flow=location.hash==="#scan"?"scan":"quick",state={quick:0,scan:0};
+const $=id=>document.getElementById(id);
+function render(){let steps=flow==="quick"?quick:scan,ix=state[flow],s=steps[ix];$("guideTag").textContent="STEP "+String(ix+1).padStart(2,"0");$("guideTitle").textContent=s[0];$("guideImage").innerHTML=illustration(s[2]);$("guideText").textContent=s[1];$("guideProgress").textContent=(ix+1)+" / "+steps.length;$("guidePrev").disabled=ix===0;$("guideNext").disabled=ix===steps.length-1;$("quickTab").setAttribute("aria-selected",String(flow==="quick"));$("scanTab").setAttribute("aria-selected",String(flow==="scan"));}
+$("quickTab").onclick=()=>{flow="quick";history.replaceState(null,"","#quick");render()};$("scanTab").onclick=()=>{flow="scan";history.replaceState(null,"","#scan");render()};$("guidePrev").onclick=()=>{if(state[flow]>0)--state[flow];render()};$("guideNext").onclick=()=>{if(state[flow]<(flow==="quick"?4:3)-1)++state[flow];render()};render();
+})();
+</script></body></html>
