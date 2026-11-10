@@ -1,0 +1,13 @@
+# Local development and operating-system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+# Dependencies installed locally for testing
+node_modules/
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+# Python cache
+__pycache__/
+*.pyc
