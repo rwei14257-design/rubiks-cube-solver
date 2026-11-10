@@ -1,0 +1,37 @@
+name: Verify published website
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Wait for Pages deployment and check public URLs
+        env:
+          SITE: https://rwei14257-design.github.io/rubiks-cube-solver
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/pages-check"
+          # Pages deploys asynchronously. A query parameter prevents a cached 404
+          # from being mistaken for the newest published revision.
+          for file in guide.html index.html app.js sw.js; do
+            echo "Checking: $SITE/$file"
+            curl --fail --silent --show-error --location \
+              --retry 30 --retry-delay 10 --retry-all-errors \
+              --max-time 20 \
+              "$SITE/$file?rev=$GITHUB_SHA" \
+              --output "$RUNNER_TEMP/pages-check/$file"
+            test -s "$RUNNER_TEMP/pages-check/$file"
+          done
+          grep -q '图文操作教程' "$RUNNER_TEMP/pages-check/guide.html"
+          grep -q './guide.html' "$RUNNER_TEMP/pages-check/index.html"
+          grep -q 'rubiks-cube-solver-v5' "$RUNNER_TEMP/pages-check/sw.js"
+          echo "PASS: published guide, homepage, app and offline worker are accessible"
